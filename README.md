@@ -1,5 +1,6 @@
 # Side Project - GUI Chat App
 Netbeans GUI Builder
+
 For this project, I will implement a simple chat application with 3 users.
 1. Users will have an opportunity to join chat or leave it
 2. After user joined chat he\she can leave a message which will appear in every chat window for every user
