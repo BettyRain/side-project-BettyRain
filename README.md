@@ -21,3 +21,23 @@ For this project, I will implement a simple chat application with 3 users.
 1. Chat should be multithreaded with peer to TCP server connection.
 2. Chat will work using laptop's IP address and on port 7070.
 3. All information (ip address, port and so on) will be provided through config file.
+4. Adaption check implemented by ping-requests
+5. Server connection will use sockets with TCP/IP protocol
+6. Exchange messages format: String
+MESSAGE author text
+//JOIN author room
+//LEAVE author room
+7. Public API is not allowed. API should be through sockets in text format
+8. Users will send each other string messages
+
+
+# Client
+Устанавливает подключение с сервером и обмен сообщениями.
+Графический интерфейс.
+Обмен Ping сообщениями с целью проверки постоянного подключения
+Отображение списка комнат и подключение к выбранной
+Отображение списка подключившихся
+
+# Server
+Подключение новых пользователей.
+Пересылка сообщений всем находящимся в канале.
