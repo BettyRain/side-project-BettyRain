@@ -20,6 +20,6 @@ For this project, I will implement a simple chat application with 3 users.
 3. By closing main window the whole app can be closed.
 
 # Implementation
-Chat should be multithreaded with peer to TCP server connection.
-Chat will work using laptop's IP address and on port 7070.
-All information (ip address, port and so on) will be provided through config file.
+1. Chat should be multithreaded with peer to TCP server connection.
+2. Chat will work using laptop's IP address and on port 7070.
+3. All information (ip address, port and so on) will be provided through config file.
