@@ -32,12 +32,10 @@ MESSAGE author text
 
 
 # Client
-Устанавливает подключение с сервером и обмен сообщениями.
-Графический интерфейс.
-Обмен Ping сообщениями с целью проверки постоянного подключения
-Отображение списка комнат и подключение к выбранной
-Отображение списка подключившихся
+1. Establishes server connectivity and messaging.
+2. GUI.
+3. Display the list of rooms and connect to the selected
 
 # Server
-Подключение новых пользователей.
-Пересылка сообщений всем находящимся в канале.
+1. New Users connection
+2. Forwarding messages to everyone in the channel.
