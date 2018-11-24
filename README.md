@@ -1,5 +1,5 @@
 # Side Project - GUI Chat App
-Netbeans GUI Builder
+Java FX
 
 For this project, I will implement a simple chat application with 3 users.
 1. Users will have an opportunity to join chat or leave it.
