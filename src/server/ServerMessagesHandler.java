@@ -172,7 +172,7 @@ public class ServerMessagesHandler extends Thread {
     }
 
     private void removeUser(String name) {
-        System.out.println("REMove:" + name);
+        System.out.println("REMOVE:" + name);
         users.remove(name);
     }
 }

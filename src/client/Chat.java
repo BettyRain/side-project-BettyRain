@@ -30,26 +30,28 @@ public class Chat {
                 String help;
                 while ((help = bufferedReader.readLine()) != null) {
                     if (help.startsWith("JOIN")) {
-  //                      Launcher.g2.printJOIN(help);
+                        Launcher.chatWindow.printJoin(help);
                     } else if (help.startsWith("MESSAGE")) {
                         System.out.println("USER MESSAGE: " + help);
- //                       Launcher.g2.printMsg(help);
+                        Launcher.chatWindow.printMsg(help);
                     } else if (help.startsWith("LEAVE")) {
- //                       Launcher.g2.printLeave(help);
+                        Launcher.chatWindow.printLeave(help);
                     } else if (help.startsWith("ERROR")) {
-//                        Launcher.g2.printERROR(help);
+                        Launcher.chatWindow.printError(help);
                     } else {
                         System.out.println("UNKNOWN COMMAND" + help);
                     }
                 }
 
             } else {
-/*                Launcher.g2.printERROR("Connection Refuesed. NICK ALREADY IN USE" );
-                Launcher.g2.printLeave("s Вы");*///todo:
+                Launcher.chatWindow.printError("Connection Refused. NICK ALREADY IN USE" );
+                Launcher.chatWindow.printLeave("s You");//todo:
+                Launcher.chatWindow.printLeave("");
             }
         } catch (IOException e) {
-/*            Launcher.g2.printERROR("Connection Refuesed. NICK ALREADY IN USE" );
-            Launcher.g2.printLeave("s Вы");*///todo:
+            Launcher.chatWindow.printError("Connection Refused. NICK ALREADY IN USE" );
+            Launcher.chatWindow.printLeave("s You");//todo:
+            Launcher.chatWindow.printLeave("");
         }
     }
 
