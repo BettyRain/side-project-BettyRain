@@ -3,11 +3,11 @@ package client;
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.util.Random;
 
 public class Chat {
     BufferedWriter bufferedWriter;
     BufferedReader bufferedReader;
+    Thread thread;
 
 
     public void init(String nick) {
@@ -36,22 +36,27 @@ public class Chat {
                         Launcher.chatWindow.printMsg(help);
                     } else if (help.startsWith("LEAVE")) {
                         Launcher.chatWindow.printLeave(help);
+//                        Launcher.g2.setStart();
                     } else if (help.startsWith("ERROR")) {
                         Launcher.chatWindow.printError(help);
-                    } else {
+                        Launcher.chatWindow.setStart();
+                    } else if(help.startsWith("PING")){
+                        try {
+                            bufferedWriter.write("PONG");
+                            bufferedWriter.newLine();
+                            bufferedWriter.flush();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } else{
                         System.out.println("UNKNOWN COMMAND" + help);
                     }
                 }
-
-            } else {
-                Launcher.chatWindow.printError("Connection Refused. NICK ALREADY IN USE" );
-                Launcher.chatWindow.printLeave("s You");//todo:
-                Launcher.chatWindow.printLeave("");
             }
         } catch (IOException e) {
-            Launcher.chatWindow.printError("Connection Refused. NICK ALREADY IN USE" );
-            Launcher.chatWindow.printLeave("s You");//todo:
-            Launcher.chatWindow.printLeave("");
+            Launcher.chatWindow.printError("Connection Refuesed. SERVER DOWN.");
+            Launcher.chatWindow.printDisconnect();
+            Launcher.chatWindow.setStart();
         }
     }
 
@@ -62,13 +67,19 @@ public class Chat {
             bufferedWriter.flush();
 
             String answer = bufferedReader.readLine();
+            System.out.println(answer);
             if (answer.equals("OK")) {
-                System.out.println("CONNECTION ESTABLISHED");
                 return true;
+            } else if (answer.equals("LOGIN ALREADY IN USE")) {
+                Launcher.chatWindow.printError("LOGIN ALREADY IN USE");
+                Launcher.chatWindow.printDisconnect();
+                Launcher.chatWindow.setStart();
             }
 
             return false;
         } catch (Exception e) {
+            Launcher.chatWindow.printError("SERVER DOWN. ");
+            Launcher.chatWindow.setStart();
             return false;
         }
     }

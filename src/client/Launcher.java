@@ -6,7 +6,6 @@ public class Launcher {
     public static void main(String[] args) {
     	chatWindow  = new ChatWindow();
         chat = new Chat();
-//        chat.init();
     }
 
 }

@@ -16,9 +16,8 @@ For this project, I will implement a simple chat application with 3 users.
 # Main window 
 1. Main window should include information who joined\left chat. 
 2. Data+UserName+left\joined. Like special logs for chat. 
-3. By closing main window the whole app can be closed. 
 
-#Implementation 
+# Implementation 
 1. Chat should be multithreaded with peer to TCP server connection. 
 2. Chat will work using laptop's IP address and on port 7070. 
 3. All information (ip address, port and so on) will be provided through config file. 
@@ -28,11 +27,11 @@ For this project, I will implement a simple chat application with 3 users.
 7. Public API is not allowed. API should be through sockets in text format 
 8. Users will send each other string messages 
 
-#Client 
+# Client 
 1. Establishes server connectivity and messaging. 
 2. GUI. 
-3. Display the list of rooms and connect to the selected 
+3. Display the when somebody is connected or disconnected
 
-#Server 
+# Server 
 1. New Users connection 
 2. Forwarding messages to everyone in the channel.

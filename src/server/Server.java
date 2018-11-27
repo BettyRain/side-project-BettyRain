@@ -1,13 +1,17 @@
 package server;
 
+import javafx.application.Application;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
+
     public static void main(String[] args) {
-        init();
+       init();
     }
+
 
     private static void init() {
         System.out.println("System running...");

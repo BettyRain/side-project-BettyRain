@@ -23,10 +23,11 @@ public class ChatWindow extends javax.swing.JFrame {
         initComponents();
         setVisible(true);
         jButton1.setEnabled(false);
+        jButton3.setEnabled(false);
     }
 
     private void initComponents() {
-
+        setResizable(false);
         jTextField1 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -56,6 +57,8 @@ public class ChatWindow extends javax.swing.JFrame {
         jTextArea1.setColumns(20);
         jTextArea1.setFont(new java.awt.Font("Comic Sans MS", Font.PLAIN, 12)); // NOI18N
         jTextArea1.setRows(5);
+
+        jTextArea1.setEditable(false);
         jScrollPane2.setViewportView(jTextArea1);
 
         jTextField2.setFont(new java.awt.Font("Comic Sans MS", Font.BOLD, 14)); // NOI18N
@@ -113,6 +116,14 @@ public class ChatWindow extends javax.swing.JFrame {
                                 .addContainerGap())
         );
 
+//        jTextField1.setText("test");
+//        jTextField2.setText("test");
+
+        jTextField2.setEnabled(true);
+        jTextField1.setEnabled(false);
+        jTextArea1.setLineWrap(true);
+        jTextArea1.setWrapStyleWord(true);
+
         pack();
     }// </editor-fold>
 
@@ -125,20 +136,39 @@ public class ChatWindow extends javax.swing.JFrame {
         new Thread(() -> Launcher.chat.sendMessage(msg)).start();
     }
 
+
     private void jButtonJoinActionPerformed(java.awt.event.ActionEvent evt) {
         new Thread(() -> Launcher.chat.init(jTextField2.getText())).start();
+        //todo: maybe we need some callback.
+
         jButton1.setEnabled(true);
         jButton2.setEnabled(false);
-        jTextField2.setEnabled(false);
+        jButton3.setEnabled(true);
+
         jLabel1.setVisible(false);
+
+
+        jTextField2.setEnabled(false);
+        jTextField1.setEnabled(true);
     }
 
+
     private void jButtonLeaveActionPerformed(java.awt.event.ActionEvent evt) {
+        printDisconnect();
         Launcher.chat.disconnect();
+        setStart();
         jButton1.setEnabled(false);
         jButton2.setEnabled(true);
-        jTextField2.setEnabled(true);
+        jButton3.setEnabled(false);
         jLabel1.setVisible(true);
+
+    }
+
+    public void printDisconnect() {
+        SwingUtilities.invokeLater(() -> {
+            jTextArea1.append("You left the chat\r\n");
+            jTextArea1.setCaretPosition(jTextArea1.getDocument().getLength());
+        });
     }
 
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {
@@ -157,27 +187,32 @@ public class ChatWindow extends javax.swing.JFrame {
 
     public synchronized void printJoin(String msg) {
         SwingUtilities.invokeLater(() -> {
-            jTextArea1.append(msg.split(" ")[1] + " joined chat\r\n");
+            jTextArea1.append(msg.split(" ")[1] + " joined the chat\r\n");
             jTextArea1.setCaretPosition(jTextArea1.getDocument().getLength());
         });
     }
 
     public synchronized void printLeave(String msg) {
         SwingUtilities.invokeLater(() -> {
-            jTextArea1.append(msg.split(" ")[1] + " left chat\r\n");
+            jTextArea1.append(msg.split(" ")[1] + " left the chat\r\n");
             jTextArea1.setCaretPosition(jTextArea1.getDocument().getLength());
         });
-        jButton1.setEnabled(false);
-        jButton2.setEnabled(true);
-        jTextField2.setEnabled(true);
-        jLabel1.setVisible(true);
     }
 
     public synchronized void printError(String msg) {
         SwingUtilities.invokeLater(() -> {
-            jTextArea1.append("FATAL ERROR " + msg + "\r\n");
+            jTextArea1.append("FATAL ERROR: " + msg + "\r\n");
             jTextArea1.setCaretPosition(jTextArea1.getDocument().getLength());
         });
     }
 
+    public void setStart() {
+        jButton1.setEnabled(false);
+        jButton2.setEnabled(true);
+        jButton3.setEnabled(false);
+
+        jTextField2.setEnabled(true);
+        jTextField1.setEnabled(false);
+
+    }
 }

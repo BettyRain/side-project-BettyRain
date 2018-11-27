@@ -5,12 +5,15 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 public class ServerMessagesHandler extends Thread {
-    static ConcurrentHashMap<String, ServerMessagesHandler> users = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<String, ServerMessagesHandler> users = new ConcurrentHashMap<>();
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
+    private Thread thread;
     private String userName;
+    private long lastPing, save;
 
     public ServerMessagesHandler(Socket socket) {
         try {
@@ -57,20 +60,58 @@ public class ServerMessagesHandler extends Thread {
         try {
             String input;
             while ((input = bufferedReader.readLine()) != null && !isInterrupted()) {
-                System.out.println(input);
                 if (input.startsWith("JOIN")) {
                     if (input.split(" ").length > 1 && !users.containsKey(input.split(" ")[1])) {
                         users.put(input.split(" ")[1], this);
                         userName = input.split(" ")[1];
                         sendOK();
                         sendUserJoined(userName);
+                        thread = new Thread(() -> {
+                            int count = 0;
+                            while (!interrupted()) {
+                                try {
+                                    bufferedWriter.write("PING");
+                                    bufferedWriter.newLine();
+                                    bufferedWriter.flush();
+                                    lastPing = System.currentTimeMillis();
+                                    save = lastPing;
+                                    TimeUnit.MILLISECONDS.sleep(5000);
+                                    if (lastPing == save) {
+                                        count++;
+                                    } else if (count == 2) {
+                                        System.out.println("lastPing - FAIL" + lastPing);
+                                        sendError("PING-PONG FAIL");
+                                        sendUserLeave(userName);
+                                        disconnect(ServerMessagesHandler.this);
+                                        thread.interrupt();
+                                        thread = null;
+                                    } else {
+                                        count = 0;
+                                    }
+                                } catch (InterruptedException | IOException e) {
+                                    sendError("PING-PONG FAIL");
+                                    sendUserLeave(userName);
+                                    disconnect(ServerMessagesHandler.this);
+                                    thread.interrupt();
+                                    thread = null;
+                                }
+                            }
+                        });
+                        thread.setDaemon(true);
+                        thread.start();
                     } else {
-                        sendError("LOGIN ALREADY IN USE OR INVALID");
+                        try {
+                            bufferedWriter.write("LOGIN ALREADY IN USE");
+                            bufferedWriter.newLine();
+                            bufferedWriter.flush();
+                        } catch (IOException e) {
+                            //e.printStackTrace();
+                        }
                         disconnect(this);
                     }
                 } else if (input.startsWith("MESSAGE")) {
                     if (input.split(" ").length > 1) {
-                        sendMessageToAll(input.split(" ")[1]);
+                        sendMessageToAll(input.split(" ", 2)[1]);
                     } else {
                         sendError("MESSAGE FORMAT ERROR");
                         disconnect(this);
@@ -79,12 +120,15 @@ public class ServerMessagesHandler extends Thread {
                 } else if (input.startsWith("LEAVE")) {
                     sendUserLeave(userName);
                     disconnect(this);
+                } else if (input.startsWith("PONG")) {
+                    lastPing = 999;
                 } else {
                     sendError("UNKNOWN COMMAND");
                 }
             }
         } catch (IOException e) {
             System.out.println("USER DISCONNECTED");
+            sendUserLeave(userName);
             disconnect(this);
         }
     }
@@ -129,22 +173,27 @@ public class ServerMessagesHandler extends Thread {
     }
 
     private void sendUserLeave(String userName) {
-        users.remove(this.userName);
-        users.forEach((k, v) -> {
-            try {
-                v.bufferedWriter.write("LEAVE " + userName);
-                v.bufferedWriter.newLine();
-                v.bufferedWriter.flush();
-            } catch (IOException e) {
-                System.out.println(139);
-                disconnect(v);
-                removeUser(v.userName);
-            }
-
-        });
+        if (users.containsKey(userName)) {
+            users.remove(this.userName);
+            users.forEach((k, v) -> {
+                try {
+                    v.bufferedWriter.write("LEAVE " + userName);
+                    v.bufferedWriter.newLine();
+                    v.bufferedWriter.flush();
+                } catch (IOException e) {
+                    System.out.println(139);
+                    disconnect(v);
+                    removeUser(v.userName);
+                }
+            });
+        }
     }
 
     private void sendError(String errorText) {
+        System.out.println("err" + this.userName);
+        users.forEach((k, v) -> {
+            System.out.println(v.userName + ":" + v.lastPing + ":" + v.save);
+        });
         try {
             users.get(this.userName).bufferedWriter.write("ERROR " + errorText);
             users.get(this.userName).bufferedWriter.newLine();
@@ -162,6 +211,7 @@ public class ServerMessagesHandler extends Thread {
     private void disconnect(ServerMessagesHandler serverMessagesHandler) {
         try {
             serverMessagesHandler.interrupt();
+            thread.interrupt();
             serverMessagesHandler.bufferedWriter.close();
             serverMessagesHandler.bufferedReader.close();
             removeUser(serverMessagesHandler.userName);
@@ -172,7 +222,7 @@ public class ServerMessagesHandler extends Thread {
     }
 
     private void removeUser(String name) {
-        System.out.println("REMOVE:" + name);
-        users.remove(name);
+        if (name != null)
+            users.remove(name);
     }
 }
