@@ -1,5 +1,7 @@
 # Side Project - GUI Chat App 
-Java FX 
+Java FX
+Java NetBeans
+(Implement two windows in different variants to learn both FX & NetBeans)
 
 For this project, I will implement a simple chat application with 3 users. 
 
