@@ -4,12 +4,24 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
+import util.ConfigFileReader;
+
+/**
+ * Chat class which handles requests
+ * 
+ * @author bettyrain
+ */
+
 public class Chat {
-	BufferedWriter bufferedWriter;
-	BufferedReader bufferedReader;
-	Thread thread;
+	static ConfigFileReader config = new ConfigFileReader();
+
+	private BufferedWriter bufferedWriter;
+	private BufferedReader bufferedReader;
+	private Socket socket;
 
 	public void init(String nick) {
+		final int PORT = Integer.parseInt(config.getProperty("PORT"));
+
 		try {
 			if (bufferedWriter != null | bufferedReader != null) {
 				try {
@@ -20,7 +32,7 @@ public class Chat {
 				bufferedReader = null;
 				bufferedWriter = null;
 			}
-			Socket socket = new Socket("localhost", 7070);
+			socket = new Socket("localhost", PORT);
 			bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
 			bufferedWriter = new BufferedWriter(
 					new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
@@ -59,6 +71,7 @@ public class Chat {
 		}
 	}
 
+	// JOIN request
 	private boolean join(String nick) {
 		try {
 			bufferedWriter.write("JOIN " + nick);
@@ -83,6 +96,7 @@ public class Chat {
 		}
 	}
 
+	// MESSAGE request
 	public void sendMessage(String message) {
 		try {
 			bufferedWriter.write("MESSAGE " + message);
@@ -93,6 +107,7 @@ public class Chat {
 		}
 	}
 
+	// LEAVE request
 	public void disconnect() {
 		try {
 			bufferedWriter.write("LEAVE");

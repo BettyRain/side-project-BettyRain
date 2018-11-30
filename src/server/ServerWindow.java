@@ -1,38 +1,27 @@
 package server;
 
 import javafx.application.Application;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.time.LocalTime;
+
+/**
+ * Server window with log from chat
+ * Window is made with using JavaFX UI
+ * Shows information about "ping-pong" connection and users
+ * 
+ * @param Stage
+ * @author bettyrain
+ */
 
 public class ServerWindow extends Application {
 	public static Controller serverGui;
 
-//  public static ServerGui getInstanse() {
-//      if (serverGui == null) {
-//          serverGui = new ServerGui();
-//      }
-//      return serverGui;
-//  }
-
-//  public ServerGui() {
-//      System.out.println("test");
-//  }
-
-	// public ServerGui() {
-//      serverGui = this;
-//  }
-
-	@Override
+	@Override 
 	public void start(Stage primaryStage) {
-//      serverGui = this;
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(getClass().getResource("/s.fxml"));
@@ -52,11 +41,6 @@ public class ServerWindow extends Application {
 		}
 
 	}
-
-//  public void test2() {
-//      System.out.println("test" + textZone);
-//      add("tfasdf asdf sadf asd f");
-//  }
 
 	public static void main(String[] args) {
 		launch();

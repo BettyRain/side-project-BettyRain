@@ -2,9 +2,17 @@ package client;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
 
 public class ChatWindow extends javax.swing.JFrame {
+	
+	/**
+	 * Chat window
+	 * Window is made with using Java Netbeans
+	 *
+	 * @author bettyrain
+	 */
+	
+	private static final long serialVersionUID = 1L;
 	private javax.swing.JButton jButton1;
 	private javax.swing.JButton jButton2;
 	private javax.swing.JButton jButton3;
@@ -15,9 +23,6 @@ public class ChatWindow extends javax.swing.JFrame {
 	private javax.swing.JTextField jTextField1;
 	private javax.swing.JTextField jTextField2;
 
-	private static final String IP_ADDR = "localhost";
-	private static final int PORT = 7070;
-//    private ServerConnection connection;
 
 	public ChatWindow() {
 		initComponents();
@@ -26,6 +31,8 @@ public class ChatWindow extends javax.swing.JFrame {
 		jButton3.setEnabled(false);
 	}
 
+	//Window design and components initialization
+	//Made by JavaNetbeans
 	private void initComponents() {
 		setResizable(false);
 		jTextField1 = new javax.swing.JTextField();
@@ -62,7 +69,6 @@ public class ChatWindow extends javax.swing.JFrame {
 		jScrollPane2.setViewportView(jTextArea1);
 
 		jTextField2.setFont(new java.awt.Font("Comic Sans MS", Font.BOLD, 14)); // NOI18N
-		jTextField2.addActionListener(this::jTextField2ActionPerformed);
 
 		jLabel1.setFont(new java.awt.Font("Comic Sans MS", Font.PLAIN, 11)); // NOI18N
 		jLabel1.setText("Enter your name and press Join");
@@ -117,17 +123,15 @@ public class ChatWindow extends javax.swing.JFrame {
 										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 						.addContainerGap()));
 
-//        jTextField1.setText("test");
-//        jTextField2.setText("test");
-
 		jTextField2.setEnabled(true);
 		jTextField1.setEnabled(false);
 		jTextArea1.setLineWrap(true);
 		jTextArea1.setWrapStyleWord(true);
 
 		pack();
-	}// </editor-fold>
-
+	}
+	
+	//Button "Post" action
 	private void jButtonPostActionPerformed(java.awt.event.ActionEvent evt) {
 		String msg = jTextField1.getText();
 		if (msg.equals("")) {
@@ -136,10 +140,10 @@ public class ChatWindow extends javax.swing.JFrame {
 		jTextField1.setText(null);
 		new Thread(() -> Launcher.chat.sendMessage(msg)).start();
 	}
-
+	
+	//Button "Join" action
 	private void jButtonJoinActionPerformed(java.awt.event.ActionEvent evt) {
 		new Thread(() -> Launcher.chat.init(jTextField2.getText())).start();
-		// todo: maybe we need some callback.
 
 		jButton1.setEnabled(true);
 		jButton2.setEnabled(false);
@@ -151,6 +155,7 @@ public class ChatWindow extends javax.swing.JFrame {
 		jTextField1.setEnabled(true);
 	}
 
+	//Button "Leave" action
 	private void jButtonLeaveActionPerformed(java.awt.event.ActionEvent evt) {
 		printDisconnect();
 		Launcher.chat.disconnect();
@@ -162,6 +167,7 @@ public class ChatWindow extends javax.swing.JFrame {
 
 	}
 
+	//Prints into users text block chat window when he/she leaves chat
 	public void printDisconnect() {
 		SwingUtilities.invokeLater(() -> {
 			jTextArea1.append("You left the chat\r\n");
@@ -169,10 +175,7 @@ public class ChatWindow extends javax.swing.JFrame {
 		});
 	}
 
-	private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {
-		// add your handling code here:
-	}
-
+	//Prints a message to the chat text block: "UserName: messagetext"
 	public synchronized void printMsg(String msg) {
 		SwingUtilities.invokeLater(() -> {
 			String help = msg.split(" ", 2)[1];
@@ -183,6 +186,7 @@ public class ChatWindow extends javax.swing.JFrame {
 		});
 	}
 
+	//Prints "join" to the chat text block when user press "join" button
 	public synchronized void printJoin(String msg) {
 		SwingUtilities.invokeLater(() -> {
 			jTextArea1.append(msg.split(" ")[1] + " joined the chat\r\n");
@@ -190,6 +194,7 @@ public class ChatWindow extends javax.swing.JFrame {
 		});
 	}
 
+	//Prints "leave" to the chat text block when user press "leave" button
 	public synchronized void printLeave(String msg) {
 		SwingUtilities.invokeLater(() -> {
 			jTextArea1.append(msg.split(" ")[1] + " left the chat\r\n");
@@ -197,13 +202,15 @@ public class ChatWindow extends javax.swing.JFrame {
 		});
 	}
 
+	//Prints error to the chat text block
 	public synchronized void printError(String msg) {
 		SwingUtilities.invokeLater(() -> {
 			jTextArea1.append("FATAL ERROR: " + msg + "\r\n");
 			jTextArea1.setCaretPosition(jTextArea1.getDocument().getLength());
 		});
 	}
-
+	
+	//Start method
 	public void setStart() {
 		jButton1.setEnabled(false);
 		jButton2.setEnabled(true);

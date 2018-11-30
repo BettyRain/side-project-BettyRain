@@ -3,9 +3,15 @@ package server;
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+
+/**
+ * ServerMessagesHandler class handles all requests
+ * 
+ * @param Socket
+ * @author bettyrain
+ */
 
 public class ServerMessagesHandler extends Thread {
 	private static ConcurrentHashMap<String, ServerMessagesHandler> users = new ConcurrentHashMap<>();
@@ -27,18 +33,15 @@ public class ServerMessagesHandler extends Thread {
 
 	/**
 	 * server:
-	 * <p>
+	 * 
 	 * out: 1) JOIN nick //nick joined channel 2) MESSAGE nick text // nick send
 	 * "text" 3) LEAVE nick // nick leave channel 4) ERROR desc //
-	 * <p>
+	 *
 	 * in: 1) JOIN nick // nick trying connect to chat 2) MESSAGE text // user send
 	 * message 3) LEAVE // user left channel
-	 * <p>
-	 * <p>
-	 * <p>
-	 * <p>
+	 * 
 	 * client: out: 1) JOIN mynick 2) MESSAGE text 3) LEAVE
-	 * <p>
+	 * 
 	 * in: 1) JOIN nick 2) MESSAGE nick text 3) LEAVE nick 4) ERROR desc
 	 */
 
@@ -121,6 +124,7 @@ public class ServerMessagesHandler extends Thread {
 		}
 	}
 
+	// Sends OK
 	private void sendOK() {
 		try {
 			bufferedWriter.write("OK");
@@ -132,6 +136,7 @@ public class ServerMessagesHandler extends Thread {
 		}
 	}
 
+	// Sends user's messages to all chat windows
 	private void sendMessageToAll(String message) {
 		users.forEach((k, v) -> {
 			try {
@@ -146,6 +151,7 @@ public class ServerMessagesHandler extends Thread {
 		});
 	}
 
+	// Sends messages that user joined the chat
 	private void sendUserJoined(String userName) {
 		users.forEach((k, v) -> {
 			try {
@@ -160,6 +166,7 @@ public class ServerMessagesHandler extends Thread {
 		});
 	}
 
+	// Sends messages that user left the chat
 	private void sendUserLeave(String userName) {
 		if (users.containsKey(userName)) {
 			users.remove(this.userName);
@@ -177,6 +184,7 @@ public class ServerMessagesHandler extends Thread {
 		}
 	}
 
+	// Sends error
 	private void sendError(String errorText) {
 		System.out.println("err" + this.userName);
 		users.forEach((k, v) -> {
@@ -196,6 +204,7 @@ public class ServerMessagesHandler extends Thread {
 
 	}
 
+	// Stops connection
 	private void disconnect(ServerMessagesHandler serverMessagesHandler) {
 		try {
 			serverMessagesHandler.interrupt();
@@ -209,6 +218,7 @@ public class ServerMessagesHandler extends Thread {
 		}
 	}
 
+	// Remove user when he/she left the chat
 	private void removeUser(String name) {
 		if (name != null)
 			users.remove(name);
