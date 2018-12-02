@@ -9,9 +9,8 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 /**
- * Server window with log from chat
- * Window is made with using JavaFX UI
- * Shows information about "ping-pong" connection and users
+ * Server window with log from chat Window is made with using JavaFX UI Shows
+ * information about "ping-pong" connection and users
  * 
  * @param Stage
  * @author bettyrain
@@ -20,7 +19,7 @@ import java.io.IOException;
 public class ServerWindow extends Application {
 	public static Controller serverGui;
 
-	@Override 
+	@Override
 	public void start(Stage primaryStage) {
 		try {
 			FXMLLoader loader = new FXMLLoader();

@@ -27,7 +27,7 @@ public class Chat {
 				try {
 					bufferedReader.close();
 				} catch (Exception e) {
-
+					System.out.println("Buffer reader close exception: " + e);
 				}
 				bufferedReader = null;
 				bufferedWriter = null;
@@ -38,28 +38,29 @@ public class Chat {
 					new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
 
 			if (join(nick)) {
-				String help;
+				String help = "";
+				String[] words = null;
 				while ((help = bufferedReader.readLine()) != null) {
-					if (help.startsWith("JOIN")) {
+					words = help.split("\\s");
+					switch (words[0]) {
+					case "JOIN":
 						Launcher.chatWindow.printJoin(help);
-					} else if (help.startsWith("MESSAGE")) {
+						break;
+					case "MESSAGE":
 						System.out.println("USER MESSAGE: " + help);
 						Launcher.chatWindow.printMsg(help);
-					} else if (help.startsWith("LEAVE")) {
+						break;
+					case "LEAVE":
 						Launcher.chatWindow.printLeave(help);
-//                        Launcher.chatWindow.setStart();
-					} else if (help.startsWith("ERROR")) {
+						break;
+					case "ERROR":
 						Launcher.chatWindow.printError(help);
 						Launcher.chatWindow.setStart();
-					} else if (help.startsWith("PING")) {
-						try {
-							bufferedWriter.write("PONG");
-							bufferedWriter.newLine();
-							bufferedWriter.flush();
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					} else {
+						break;
+					case "PING":
+						sendPong();
+						break;
+					default:
 						System.out.println("UNKNOWN COMMAND" + help);
 					}
 				}
@@ -103,6 +104,7 @@ public class Chat {
 			bufferedWriter.newLine();
 			bufferedWriter.flush();
 		} catch (Exception e) {
+			System.out.println("Error message sending: " + e);
 //            e.printStackTrace();
 		}
 	}
@@ -114,7 +116,20 @@ public class Chat {
 			bufferedWriter.newLine();
 			bufferedWriter.flush();
 		} catch (Exception e) {
+			System.out.println("Error leave: " + e);
 //            e.printStackTrace();
+		}
+	}
+
+	// PONG request
+	public void sendPong() {
+		try {
+			bufferedWriter.write("PONG");
+			bufferedWriter.newLine();
+			bufferedWriter.flush();
+		} catch (IOException e) {
+			System.out.println("Error pong: " + e);
+//			e.printStackTrace();
 		}
 	}
 }

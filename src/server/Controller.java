@@ -16,7 +16,6 @@ public class Controller {
 	public TextArea textZone;
 
 	public void add(String message) {
-		System.out.println("Add");
 		LocalTime localTime = LocalTime.now();
 		textZone.appendText(localTime.getHour() + ":" + localTime.getMinute() + ":" + localTime.getSecond() + " " + " "
 				+ message + "\n");
